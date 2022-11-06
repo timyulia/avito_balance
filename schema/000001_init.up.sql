@@ -27,3 +27,5 @@ CREATE TABLE history
     amount int not null,
     date DATE
 );
+
+

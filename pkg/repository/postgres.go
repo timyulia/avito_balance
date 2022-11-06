@@ -10,7 +10,7 @@ const (
 	reservedTable = "reserved"
 	historyTable  = "history"
 	reportTable   = "report"
-	//serviceTable = "service"
+	serviceTable  = "service"
 )
 
 type Config struct {

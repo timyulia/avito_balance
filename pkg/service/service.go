@@ -13,12 +13,19 @@ type Billing interface {
 	Dereserve(ord balance.Order) error
 }
 
+type Info interface {
+	MakeReport(year, month int) error
+	GiveName(serv balance.Report) error
+}
+
 type Service struct {
 	Billing
+	Info
 }
 
 func NewService(r *repository.Repository) *Service {
 	return &Service{
 		Billing: NewBillingService(r.Billing),
+		Info:    NewInfoService(r.Info),
 	}
 }

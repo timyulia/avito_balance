@@ -25,6 +25,11 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		api.PUT("/reserve", h.reserve)
 		api.PUT("/return", h.dereserve)
 
+		info := api.Group("/info")
+		{
+			info.GET("/report/:year/:month", h.report)
+			info.PUT("/specify", h.giveName)
+		}
 	}
 	return router
 }
