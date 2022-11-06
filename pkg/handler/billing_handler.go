@@ -28,19 +28,13 @@ func (h *Handler) addMoney(c *gin.Context) {
 
 func (h *Handler) reserve(c *gin.Context) {
 
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		newErrorResponse(c, http.StatusBadRequest, "invalid id param")
-		return
-	}
-
 	var input balance.Order
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	err = h.services.Reserve(id, input)
+	err := h.services.Reserve(input)
 
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
@@ -53,11 +47,6 @@ func (h *Handler) reserve(c *gin.Context) {
 }
 
 func (h *Handler) writeOff(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		newErrorResponse(c, http.StatusBadRequest, "invalid id param")
-		return
-	}
 
 	var input balance.Order
 	if err := c.BindJSON(&input); err != nil {
@@ -65,7 +54,7 @@ func (h *Handler) writeOff(c *gin.Context) {
 		return
 	}
 
-	err = h.services.WriteOff(id, input)
+	err := h.services.WriteOff(input)
 
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
@@ -92,17 +81,12 @@ func (h *Handler) getBalance(c *gin.Context) {
 }
 
 func (h *Handler) dereserve(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		newErrorResponse(c, http.StatusBadRequest, "invalid id param")
+	var input balance.Order
+	if err := c.BindJSON(&input); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
-	order, err := strconv.Atoi(c.Param("service"))
-	if err != nil {
-		newErrorResponse(c, http.StatusBadRequest, "invalid service param")
-		return
-	}
-	err = h.services.Dereserve(order, id)
+	err := h.services.Dereserve(input)
 
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())

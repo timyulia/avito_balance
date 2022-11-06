@@ -20,10 +20,10 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 		//api.GET("/", h.GetAllAccs) //all bills
 		api.GET("/:id", h.getBalance)
-		api.PUT("/", h.addMoney)
-		api.PUT("/:id", h.writeOff)
-		api.PUT("/reserve/:id", h.reserve)
-		api.PUT("/:id/:service", h.dereserve)
+		api.PUT("/add", h.addMoney)
+		api.PUT("/", h.writeOff)
+		api.PUT("/reserve", h.reserve)
+		api.PUT("/return", h.dereserve)
 
 	}
 	return router

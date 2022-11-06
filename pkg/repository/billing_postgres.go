@@ -2,6 +2,7 @@ package repository
 
 import (
 	"balance"
+	"database/sql"
 	"errors"
 	_ "errors"
 	"fmt"
@@ -24,10 +25,10 @@ func (r *BillingPostgres) AddMoney(account balance.User) error {
 	return err
 }
 
-func (r *BillingPostgres) Reserve(userId int, ord balance.Order) error {
+func (r *BillingPostgres) Reserve(ord balance.Order) error {
 	currAmount := 0
 	query := fmt.Sprintf("SELECT amount FROM %s WHERE id=$1", usersTable)
-	err := r.db.Get(&currAmount, query, userId)
+	err := r.db.Get(&currAmount, query, ord.UserId)
 	if err != nil {
 		return err
 	}
@@ -42,7 +43,7 @@ func (r *BillingPostgres) Reserve(userId int, ord balance.Order) error {
 
 	addQuery := fmt.Sprintf("INSERT INTO %s (user_id, service_id, order_id, amount) VALUES ($1, $2, $3, $4)",
 		reservedTable)
-	_, err = tx.Exec(addQuery, userId, ord.ServiceId, ord.OrderId, ord.Amount)
+	_, err = tx.Exec(addQuery, ord.UserId, ord.ServiceId, ord.OrderId, ord.Amount)
 	if err != nil {
 		err1 := tx.Rollback()
 		if err1 != nil {
@@ -53,7 +54,7 @@ func (r *BillingPostgres) Reserve(userId int, ord balance.Order) error {
 
 	cutQuery := fmt.Sprintf("UPDATE %s SET amount=amount-$1 WHERE id=$2",
 		usersTable)
-	_, err = tx.Exec(cutQuery, ord.Amount, userId)
+	_, err = tx.Exec(cutQuery, ord.Amount, ord.UserId)
 	if err != nil {
 		err2 := tx.Rollback()
 		if err2 != nil {
@@ -65,8 +66,8 @@ func (r *BillingPostgres) Reserve(userId int, ord balance.Order) error {
 	return tx.Commit()
 }
 
-func (r *BillingPostgres) WriteOff(userId int, ord balance.Order) error {
-	err := r.checkRes(userId, ord)
+func (r *BillingPostgres) WriteOff(ord balance.Order) error {
+	err := r.checkRes(ord)
 	if err != nil {
 		return err
 	}
@@ -101,7 +102,7 @@ func (r *BillingPostgres) WriteOff(userId int, ord balance.Order) error {
 	historyQuery := fmt.Sprintf("INSERT INTO %s ( user_id, reason, amount, date) VALUES ($1, $2, $3, current_timestamp)",
 		historyTable)
 	reason := fmt.Sprintf("write-off for the service %d", ord.ServiceId)
-	_, err = tx.Exec(historyQuery, userId, reason, ord.Amount)
+	_, err = tx.Exec(historyQuery, ord.UserId, reason, ord.Amount)
 
 	if err != nil {
 		err3 := tx.Rollback()
@@ -120,11 +121,15 @@ func (r *BillingPostgres) GetBalance(id int) (int, error) {
 	return amount, err
 }
 
-func (r *BillingPostgres) checkRes(userId int, ord balance.Order) error {
+func (r *BillingPostgres) checkRes(ord balance.Order) error {
 	reserv := 0
 	checkQuery := fmt.Sprintf("SELECT amount FROM %s WHERE order_id=$1 AND user_id=$2 AND service_id=$3", reservedTable)
-	err := r.db.Get(&reserv, checkQuery, ord.OrderId, userId, ord.ServiceId)
+	err := r.db.Get(&reserv, checkQuery, ord.OrderId, ord.UserId, ord.ServiceId)
+
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return errors.New("fields do not match")
+		}
 		return err
 	}
 	if reserv < ord.Amount {
@@ -133,18 +138,18 @@ func (r *BillingPostgres) checkRes(userId int, ord balance.Order) error {
 	return nil
 }
 
-func (r *BillingPostgres) Dereserve(orderId, userId int) error {
+func (r *BillingPostgres) Dereserve(ord balance.Order) error {
 
 	amount := 0
 	query := fmt.Sprintf("SELECT amount FROM %s WHERE order_id=$1")
-	err := r.db.Get(&amount, query, orderId)
+	err := r.db.Get(&amount, query, ord.OrderId)
 	tx, err := r.db.Begin()
 	if err != nil {
 		return err
 	}
 
 	delQuery := fmt.Sprintf("DELETE FROM %s WHERE order_id=$1 AND user_id=$2 RETURNING amount", reservedTable)
-	row := tx.QueryRow(delQuery, orderId, userId)
+	row := tx.QueryRow(delQuery, ord.OrderId, ord.UserId)
 	err = row.Scan(&amount)
 	if err != nil {
 		err1 := tx.Rollback()
@@ -155,7 +160,7 @@ func (r *BillingPostgres) Dereserve(orderId, userId int) error {
 	}
 
 	addQuery := fmt.Sprintf("UPDATE %s SET amount = amount+$1 WHERE id=$2", usersTable)
-	_, err = tx.Exec(addQuery, amount, userId)
+	_, err = tx.Exec(addQuery, amount, ord.UserId)
 	if err != nil {
 		err2 := tx.Rollback()
 		if err2 != nil {

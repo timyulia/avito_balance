@@ -7,10 +7,10 @@ import (
 
 type Billing interface {
 	AddMoney(account balance.User) error
-	Reserve(userId int, ord balance.Order) error
-	WriteOff(userId int, ord balance.Order) error
+	Reserve(ord balance.Order) error
+	WriteOff(ord balance.Order) error
 	GetBalance(id int) (int, error)
-	Dereserve(orderId, userId int) error
+	Dereserve(ord balance.Order) error
 }
 
 type Repository struct {

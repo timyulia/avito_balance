@@ -21,18 +21,18 @@ func (s *BillingService) AddMoney(account balance.User) error {
 	return s.repo.AddMoney(account)
 }
 
-func (s *BillingService) Reserve(userId int, ord balance.Order) error {
+func (s *BillingService) Reserve(ord balance.Order) error {
 	if ord.Amount < 0 {
 		return errors.New("negative amount")
 	}
-	return s.repo.Reserve(userId, ord)
+	return s.repo.Reserve(ord)
 }
 
-func (s *BillingService) WriteOff(userId int, ord balance.Order) error {
+func (s *BillingService) WriteOff(ord balance.Order) error {
 	if ord.Amount < 0 {
 		return errors.New("negative amount")
 	}
-	return s.repo.WriteOff(userId, ord)
+	return s.repo.WriteOff(ord)
 }
 
 func (s *BillingService) GetBalance(id int) (int, error) {
@@ -40,6 +40,6 @@ func (s *BillingService) GetBalance(id int) (int, error) {
 	return s.repo.GetBalance(id)
 }
 
-func (s *BillingService) Dereserve(orderId, userId int) error {
-	return s.repo.Dereserve(orderId, userId)
+func (s *BillingService) Dereserve(ord balance.Order) error {
+	return s.repo.Dereserve(ord)
 }
