@@ -13,6 +13,13 @@ import (
 	"os"
 )
 
+// @Title Balance API
+// @version 1.0
+// @description     This is a microservice for working with balance
+
+// @host      localhost:8000
+// @BasePath  /
+
 func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 	if err := initConfig(); err != nil {

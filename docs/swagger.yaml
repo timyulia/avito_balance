@@ -1,0 +1,235 @@
+basePath: /
+definitions:
+  balance.Order:
+    properties:
+      amount:
+        type: integer
+      id:
+        type: integer
+      order_id:
+        type: integer
+      service_id:
+        type: integer
+    type: object
+  balance.Report:
+    properties:
+      amount:
+        type: integer
+      name:
+        type: string
+      service_id:
+        type: integer
+    required:
+    - name
+    type: object
+  balance.User:
+    properties:
+      amount:
+        description: Name     string `json:"name" binding:"required"`
+        type: integer
+      id:
+        type: integer
+    type: object
+  handler.errorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+host: localhost:8000
+info:
+  contact: {}
+  description: This is a microservice for working with balance
+  title: Balance API
+  version: "1.0"
+paths:
+  /bill:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: specify an existing order
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/balance.Order'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      summary: write off
+      tags:
+      - billing
+  /bill/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      summary: get balance
+      tags:
+      - billing
+  /bill/add:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: user and amount
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/balance.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      summary: add money
+      tags:
+      - billing
+  /bill/info/report/:year/:month:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: choose a year and a month
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/balance.Report'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      summary: make a report
+      tags:
+      - billing
+  /bill/info/specify:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: enter the service id and a name
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/balance.Report'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      summary: give name to a service
+      tags:
+      - billing
+  /bill/reserve:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: create new order to reserve money
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/balance.Order'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      summary: reserve
+      tags:
+      - billing
+  /bill/return:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: enter the order id and the user id
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/balance.Order'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      summary: return money
+      tags:
+      - billing
+swagger: "2.0"
