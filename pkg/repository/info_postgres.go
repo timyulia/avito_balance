@@ -35,9 +35,10 @@ func (r *InfoPostgres) GiveName(serv balance.Report) error {
 	return err
 }
 
-func (r *InfoPostgres) GetHistory(id int, sort string) ([]balance.History, error) {
+func (r *InfoPostgres) GetHistory(id int, sort string, p *balance.Pagination) ([]balance.History, error) {
 	var hist []balance.History
-	query := fmt.Sprintf("SELECT  date, reason, amount FROM %s WHERE user_id=$1 ORDER BY %s", historyTable, sort)
-	err := r.db.Select(&hist, query, id)
+	offset := (p.Page - 1) * p.Limit
+	query := fmt.Sprintf("SELECT  date, reason, amount FROM %s WHERE user_id=$1 ORDER BY %s LIMIT $3 OFFSET $2", historyTable, sort)
+	err := r.db.Select(&hist, query, id, offset, p.Limit)
 	return hist, err
 }

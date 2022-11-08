@@ -23,8 +23,8 @@ func (s *InfoService) GiveName(serv balance.Report) error {
 	return s.repo.GiveName(serv)
 }
 
-func (s *InfoService) GetHistory(id int, sort string) ([]balance.History, error) {
-	hist, err := s.repo.GetHistory(id, sort)
+func (s *InfoService) GetHistory(id int, sort string, p *balance.Pagination) ([]balance.History, error) {
+	hist, err := s.repo.GetHistory(id, sort, p)
 	for i := range hist {
 		hist[i].Date = hist[i].Date[0:10]
 	}

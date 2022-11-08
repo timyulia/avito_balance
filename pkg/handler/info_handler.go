@@ -87,8 +87,9 @@ func (h *Handler) getHistory(c *gin.Context) {
 		newErrorResponse(c, http.StatusBadRequest, "invalid sort param")
 		return
 	}
+	p := generatePaginationFromRequest(c)
 
-	userLists, err := h.services.GetHistory(id, sort)
+	userLists, err := h.services.GetHistory(id, sort, &p)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{

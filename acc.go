@@ -29,3 +29,9 @@ type History struct {
 	Amount int    `json:"amount" db:"amount"`
 	Date   string `json:"date" db:"date"`
 }
+
+type Pagination struct {
+	Limit int    `json:"limit"`
+	Page  int    `json:"page"`
+	Sort  string `json:"sort"`
+}
