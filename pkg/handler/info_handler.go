@@ -2,21 +2,21 @@ package handler
 
 import (
 	"balance"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
 )
 
 // @Summary      make a report
-// @Tags         billing
+// @Tags         info
 // @Accept       json
 // @Produce      json
-// @Param        input body balance.Report true "choose a year and a month"
+//@Param year   path int true "year"
+//@Param month   path int true "month"
 // @Success      200
 // @Failure      400  {object}  errorResponse
 // @Failure      500  {object}  errorResponse
-// @Router       /bill/info/report/:year/:month [get]
+// @Router       /bill/info/report/{year}/{month} [get]
 func (h *Handler) report(c *gin.Context) {
 	year, err := strconv.Atoi(c.Param("year"))
 	if err != nil {
@@ -35,32 +35,26 @@ func (h *Handler) report(c *gin.Context) {
 		return
 	}
 
-	file, err := c.FormFile("report.csv")
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	// Upload the file to specific dst.
-	dst := "csv"
-	err = c.SaveUploadedFile(file, dst)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	c.String(http.StatusOK, fmt.Sprintf("'%s' uploaded!", file.Filename))
-
-	//c.JSON(http.StatusOK, statusResponse{
-	//	Status: "ok",
-	//})
+	c.JSON(http.StatusOK, linkResponse{
+		Link: "/bill/info/report",
+	})
 }
 
-// @Summary      give name to a service
-// @Tags         billing
+// @Summary      give a name to a service
+// @Tags         info
 // @Accept       json
 // @Produce      json
-// @Param        input body balance.Report true "enter the service id and a name"
+// @Param        input body balance.Service true "enter service id and a name"
 // @Success      200
 // @Failure      400  {object}  errorResponse
 // @Failure      500  {object}  errorResponse
@@ -79,4 +73,32 @@ func (h *Handler) giveName(c *gin.Context) {
 	c.JSON(http.StatusOK, statusResponse{
 		Status: "ok",
 	})
+}
+
+func (h *Handler) getHistory(c *gin.Context) {
+	//pagination := GeneratePaginationFromRequest(c)
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "invalid id param")
+		return
+	}
+	sort := c.Param("sort")
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "invalid sort param")
+		return
+	}
+
+	userLists, err := h.services.GetHistory(id, sort)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err,
+		})
+		return
+
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"data": userLists,
+	})
+
 }

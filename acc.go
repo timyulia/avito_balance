@@ -1,9 +1,9 @@
 package balance
 
 type User struct {
-	Id int `json:"id" db:"id"`
-	//Name     string `json:"name" binding:"required"`
-	Amount int `json:"amount" db:"amount"`
+	Id     int    `json:"id" db:"id"`
+	Reason string `json:"reason" db:"reason"`
+	Amount int    `json:"amount" db:"amount"`
 }
 
 type Order struct {
@@ -17,4 +17,15 @@ type Report struct {
 	ServiceId int    `json:"service_id" db:"service_id"`
 	Name      string `json:"name" binding:"required"`
 	Amount    int    `json:"amount" db:"amount"`
+}
+
+type Service struct {
+	ServiceId int    `json:"service_id" db:"service_id"`
+	Name      string `json:"name" db:"name"`
+}
+
+type History struct {
+	Reason string `json:"reason" db:"reason"`
+	Amount int    `json:"amount" db:"amount"`
+	Date   string `json:"date" db:"date"`
 }

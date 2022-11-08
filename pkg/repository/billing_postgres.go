@@ -19,10 +19,31 @@ func NewBillingPostgres(db *sqlx.DB) *BillingPostgres {
 }
 
 func (r *BillingPostgres) AddMoney(account balance.User) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
 	query := fmt.Sprintf("INSERT INTO %s as u  (id, amount) VALUES ($1, $2) ON CONFLICT (id) DO UPDATE"+
 		" SET amount = EXCLUDED.amount+u.amount", usersTable)
-	_, err := r.db.Exec(query, account.Id, account.Amount)
-	return err
+	_, err = tx.Exec(query, account.Id, account.Amount)
+	if err != nil {
+		err1 := tx.Rollback()
+		if err1 != nil {
+			return err1
+		}
+		return err
+	}
+	query = fmt.Sprintf("INSERT INTO %s  (user_id, reason, amount, date) VALUES ($1, $2, $3, current_timestamp)", historyTable)
+	_, err = tx.Exec(query, account.Id, account.Reason, account.Amount)
+	if err != nil {
+		err1 := tx.Rollback()
+		if err1 != nil {
+			return err1
+		}
+		return err
+	}
+	return tx.Commit()
+
 }
 
 func (r *BillingPostgres) Reserve(ord balance.Order) error {
@@ -92,22 +113,26 @@ func (r *BillingPostgres) WriteOff(ord balance.Order) error {
 		reservedTable)
 	_, err = tx.Exec(cutQuery, ord.OrderId)
 	if err != nil {
-		err2 := tx.Rollback()
-		if err2 != nil {
-			return err2
+		err1 := tx.Rollback()
+		if err1 != nil {
+			return err1
 		}
 		return err
 	}
 
 	historyQuery := fmt.Sprintf("INSERT INTO %s ( user_id, reason, amount, date) VALUES ($1, $2, $3, current_timestamp)",
 		historyTable)
-	reason := fmt.Sprintf("write-off for the service %d", ord.ServiceId)
+	name, err := r.getName(ord.ServiceId)
+	if err != nil {
+		name = "without name"
+	}
+	reason := fmt.Sprintf("write-off for the service %s", name)
 	_, err = tx.Exec(historyQuery, ord.UserId, reason, ord.Amount)
 
 	if err != nil {
-		err3 := tx.Rollback()
-		if err3 != nil {
-			return err3
+		err1 := tx.Rollback()
+		if err1 != nil {
+			return err1
 		}
 		return err
 	}
@@ -170,4 +195,11 @@ func (r *BillingPostgres) Dereserve(ord balance.Order) error {
 	}
 	return tx.Commit()
 
+}
+
+func (r *BillingPostgres) getName(id int) (string, error) {
+	query := fmt.Sprintf("SELECT name FROM %s WHERE id=$1")
+	var name string
+	err := r.db.Get(&name, query, id)
+	return name, err
 }

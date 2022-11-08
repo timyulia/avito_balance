@@ -16,6 +16,7 @@ type Billing interface {
 type Info interface {
 	MakeReport(year, month int) error
 	GiveName(serv balance.Report) error
+	GetHistory(id int, sort string) ([]balance.History, error)
 }
 
 type Service struct {

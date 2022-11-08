@@ -35,6 +35,9 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		{
 			info.GET("/report/:year/:month", h.report)
 			info.PUT("/specify", h.giveName)
+			info.StaticFile("/report", "report.csv")
+			info.GET("history/:id/:sort", h.getHistory)
+
 		}
 	}
 	return router

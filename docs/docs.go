@@ -100,7 +100,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/bill/info/report/:year/:month": {
+        "/bill/info/report/{year}/{month}": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -109,18 +109,23 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "billing"
+                    "info"
                 ],
                 "summary": "make a report",
                 "parameters": [
                     {
-                        "description": "choose a year and a month",
-                        "name": "input",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/balance.Report"
-                        }
+                        "type": "integer",
+                        "description": "year",
+                        "name": "year",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "month",
+                        "name": "month",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -151,17 +156,17 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "billing"
+                    "info"
                 ],
-                "summary": "give name to a service",
+                "summary": "give a name to a service",
                 "parameters": [
                     {
-                        "description": "enter the service id and a name",
+                        "description": "enter service id and a name",
                         "name": "input",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/balance.Report"
+                            "$ref": "#/definitions/balance.Service"
                         }
                     }
                 ],
@@ -330,15 +335,12 @@ const docTemplate = `{
                 }
             }
         },
-        "balance.Report": {
+        "balance.Service": {
             "type": "object",
             "required": [
                 "name"
             ],
             "properties": {
-                "amount": {
-                    "type": "integer"
-                },
                 "name": {
                     "type": "string"
                 },
@@ -351,11 +353,13 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "amount": {
-                    "description": "Name     string ` + "`" + `json:\"name\" binding:\"required\"` + "`" + `",
                     "type": "integer"
                 },
                 "id": {
                     "type": "integer"
+                },
+                "reason": {
+                    "type": "string"
                 }
             }
         },

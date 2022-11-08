@@ -11,10 +11,8 @@ definitions:
       service_id:
         type: integer
     type: object
-  balance.Report:
+  balance.Service:
     properties:
-      amount:
-        type: integer
       name:
         type: string
       service_id:
@@ -25,10 +23,11 @@ definitions:
   balance.User:
     properties:
       amount:
-        description: Name     string `json:"name" binding:"required"`
         type: integer
       id:
         type: integer
+      reason:
+        type: string
     type: object
   handler.errorResponse:
     properties:
@@ -124,17 +123,21 @@ paths:
       summary: add money
       tags:
       - billing
-  /bill/info/report/:year/:month:
+  /bill/info/report/{year}/{month}:
     get:
       consumes:
       - application/json
       parameters:
-      - description: choose a year and a month
-        in: body
-        name: input
+      - description: year
+        in: path
+        name: year
         required: true
-        schema:
-          $ref: '#/definitions/balance.Report'
+        type: integer
+      - description: month
+        in: path
+        name: month
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
@@ -150,18 +153,18 @@ paths:
             $ref: '#/definitions/handler.errorResponse'
       summary: make a report
       tags:
-      - billing
+      - info
   /bill/info/specify:
     put:
       consumes:
       - application/json
       parameters:
-      - description: enter the service id and a name
+      - description: enter service id and a name
         in: body
         name: input
         required: true
         schema:
-          $ref: '#/definitions/balance.Report'
+          $ref: '#/definitions/balance.Service'
       produces:
       - application/json
       responses:
@@ -175,9 +178,9 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/handler.errorResponse'
-      summary: give name to a service
+      summary: give a name to a service
       tags:
-      - billing
+      - info
   /bill/reserve:
     put:
       consumes:
