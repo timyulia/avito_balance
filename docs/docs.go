@@ -210,7 +210,7 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "sort",
                         "name": "sort",
                         "in": "path",

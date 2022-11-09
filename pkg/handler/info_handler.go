@@ -80,7 +80,7 @@ func (h *Handler) giveName(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param id   path int true "id"
-// @Param sort   path int true "sort"
+// @Param sort   path string true "sort"
 // @Success      200 {object} []balance.History
 // @Failure      400  {object}  errorResponse
 // @Failure      500  {object}  errorResponse

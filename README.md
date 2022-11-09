@@ -5,8 +5,8 @@
 
 ```bash
 docker-compose up --build balance
-^C
-migrate -path ./schema -database 'postgres://postgres:qwerty@localhost:5432/postgres?sslmode=disable' up
+
+docker-compose up balance
 ```
 Если приложение запусается повторно:
 ```bash
@@ -22,4 +22,3 @@ localhost:8000/bill/
 
 
 
-**Сценарии использования:**
