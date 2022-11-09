@@ -7,7 +7,7 @@ type User struct {
 }
 
 type Order struct {
-	UserId    int `json:"id" db:"id"`
+	UserId    int `json:"user_id" db:"user_id"`
 	ServiceId int `json:"service_id" db:"service_id"`
 	OrderId   int `json:"order_id" db:"order_id"`
 	Amount    int `json:"amount" db:"amount"`

@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  db:
+    restart: always
+    image: postgres:latest
+    container_name: "database"
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=qwerty
+
+    volumes:
+      - ./.database/postgre/data:/var/lib/postgresql/data
+
+  balance:
+    restart: always
+    build: ./
+    container_name: "rest-api"
+    command: ./balance
+    environment:
+      DB_USERNAME: "postgres"
+      DB_PASSWORD: "qwerty"
+      DB_DB: "postgres"
+      DB_HOST: "db"
+      DB_TABLE: "postgres"
+      DB_PORT: "5432"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+

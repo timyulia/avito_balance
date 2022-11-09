@@ -5,6 +5,8 @@ import (
 	"balance/pkg/repository"
 )
 
+//go:generate mockgen -source=service.go -destination=mocks/mock.go
+
 type Billing interface {
 	AddMoney(account balance.User) error
 	Reserve(ord balance.Order) error

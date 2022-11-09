@@ -39,7 +39,7 @@ func (h *Handler) addMoney(c *gin.Context) {
 // @Tags         billing
 // @Accept       json
 // @Produce      json
-// @Param        input body balance.Order true "create new order to reserve money"
+// @Param        input body balance.Order true "create a new order to reserve money"
 // @Success      200
 // @Failure      400  {object}  errorResponse
 // @Failure      500  {object}  errorResponse

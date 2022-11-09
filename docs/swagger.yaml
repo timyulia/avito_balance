@@ -13,11 +13,11 @@ definitions:
     properties:
       amount:
         type: integer
-      id:
-        type: integer
       order_id:
         type: integer
       service_id:
+        type: integer
+      user_id:
         type: integer
     type: object
   balance.Service:
@@ -223,7 +223,7 @@ paths:
       consumes:
       - application/json
       parameters:
-      - description: create new order to reserve money
+      - description: create a new order to reserve money
         in: body
         name: input
         required: true

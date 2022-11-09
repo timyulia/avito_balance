@@ -249,7 +249,7 @@ const docTemplate = `{
                 "summary": "reserve",
                 "parameters": [
                     {
-                        "description": "create new order to reserve money",
+                        "description": "create a new order to reserve money",
                         "name": "input",
                         "in": "body",
                         "required": true,
@@ -384,13 +384,13 @@ const docTemplate = `{
                 "amount": {
                     "type": "integer"
                 },
-                "id": {
-                    "type": "integer"
-                },
                 "order_id": {
                     "type": "integer"
                 },
                 "service_id": {
+                    "type": "integer"
+                },
+                "user_id": {
                     "type": "integer"
                 }
             }
