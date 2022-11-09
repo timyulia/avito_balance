@@ -75,8 +75,17 @@ func (h *Handler) giveName(c *gin.Context) {
 	})
 }
 
+// @Summary      get history
+// @Tags         info
+// @Accept       json
+// @Produce      json
+// @Param id   path int true "id"
+// @Success      200 {object} []balance.History
+// @Failure      400  {object}  errorResponse
+// @Failure      500  {object}  errorResponse
+// @Router       /bill/info/{id} [get]
 func (h *Handler) getHistory(c *gin.Context) {
-	//pagination := GeneratePaginationFromRequest(c)
+	
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, "invalid id param")
@@ -89,7 +98,7 @@ func (h *Handler) getHistory(c *gin.Context) {
 	}
 	p := generatePaginationFromRequest(c)
 
-	userLists, err := h.services.GetHistory(id, sort, &p)
+	hists, err := h.services.GetHistory(id, sort, &p)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -99,7 +108,7 @@ func (h *Handler) getHistory(c *gin.Context) {
 
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"data": userLists,
+		"data": hists,
 	})
 
 }

@@ -15,6 +15,7 @@ CREATE TABLE reserved
 
 CREATE TABLE report
 (
+    id serial not null unique,
     service_id int not null,
     amount int not null,
     date DATE
@@ -22,10 +23,16 @@ CREATE TABLE report
 
 CREATE TABLE history
 (
+    id serial not null unique,
     user_id int not null,
     reason varchar(255),
     amount int not null,
     date DATE
 );
 
+CREATE TABLE service
+(
+    service_id int not null unique,
+    name varchar(255)
+);
 

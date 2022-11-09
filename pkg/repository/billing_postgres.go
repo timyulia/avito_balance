@@ -33,6 +33,7 @@ func (r *BillingPostgres) AddMoney(account balance.User) error {
 		}
 		return err
 	}
+	account.Reason = "account replenishment: " + account.Reason
 	query = fmt.Sprintf("INSERT INTO %s  (user_id, reason, amount, date) VALUES ($1, $2, $3, current_timestamp)", historyTable)
 	_, err = tx.Exec(query, account.Id, account.Reason, account.Amount)
 	if err != nil {
