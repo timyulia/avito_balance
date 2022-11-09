@@ -130,7 +130,7 @@ paths:
       summary: add money
       tags:
       - billing
-  /bill/info/{id}/{sort}:
+  /bill/info/history/{id}/{sort}:
     get:
       consumes:
       - application/json

@@ -199,7 +199,7 @@ func (r *BillingPostgres) Dereserve(ord balance.Order) error {
 }
 
 func (r *BillingPostgres) getName(id int) (string, error) {
-	query := fmt.Sprintf("SELECT name FROM %s WHERE id=$1")
+	query := fmt.Sprintf("SELECT name FROM %s WHERE id=$1", serviceTable)
 	var name string
 	err := r.db.Get(&name, query, id)
 	return name, err
