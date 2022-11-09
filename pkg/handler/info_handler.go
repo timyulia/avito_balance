@@ -80,12 +80,13 @@ func (h *Handler) giveName(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param id   path int true "id"
+// @Param sort   path int true "sort"
 // @Success      200 {object} []balance.History
 // @Failure      400  {object}  errorResponse
 // @Failure      500  {object}  errorResponse
-// @Router       /bill/info/{id} [get]
+// @Router       /bill/info/{id}/{sort} [get]
 func (h *Handler) getHistory(c *gin.Context) {
-	
+
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, "invalid id param")

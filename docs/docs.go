@@ -189,7 +189,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/bill/info/{id}": {
+        "/bill/info/{id}/{sort}": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -206,6 +206,13 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "id",
                         "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "sort",
+                        "name": "sort",
                         "in": "path",
                         "required": true
                     }
