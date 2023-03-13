@@ -1,4 +1,4 @@
-# avito_balance
+# balance
 
 ## Запуск
 
