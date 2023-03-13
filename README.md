@@ -1,6 +1,6 @@
 # avito_balance
 
-##Запуск
+## Запуск
 
 ```bash
 docker-compose up --build balance
@@ -14,7 +14,7 @@ http://localhost:8000/swagger/index.html#/
 Адрес для Postman:    
 localhost:8000/bill/
 
-##Примеры
+## Примеры
 
 **1. Запрос истории пользователя**  
 GET  
