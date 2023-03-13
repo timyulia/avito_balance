@@ -1,13 +1,5 @@
 # balance
 
-## Запуск
-
-```bash
-docker-compose up --build balance
-
-docker-compose up balance
-```
-
 Swagger доступен по ссылке:  
 http://localhost:8000/swagger/index.html#/
 
