@@ -8,15 +8,7 @@ docker-compose up --build balance
 
 docker-compose up balance
 ```
-Если приложение запусается повторно:
-```bash
-docker-compose up balance
-```
 
-При ошибках с БД можно выполнить миграцию:  
-```bash
-migrate -path ./schema -database 'postgres://postgres:qwerty@localhost:5432/postgres?sslmode=disable' up
-```
 Swagger доступен по ссылке:  
 http://localhost:8000/swagger/index.html#/
 
