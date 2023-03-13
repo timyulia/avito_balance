@@ -40,7 +40,7 @@ localhost:8000/bill/info/history/14/amount?page=5&limit=2
 
 Параметры пагинации не предусмотрены в Swagger, но работают в Postman.
 
-**2. Запрос баланса пользователя**__
+**2. Запрос баланса пользователя** <br />
 GET  
 localhost:8000/bill/14
 
